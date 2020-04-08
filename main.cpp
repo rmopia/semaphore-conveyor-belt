@@ -13,7 +13,7 @@ using namespace std;
 
 int main(int argc, char **argv){
     sem_t mutex;
-    int value = 0;
+    int prod_value = 0;
     int ProductionValue; /* amount of candies produced  */
     int OnBeltValue; /* current amount of candies on the belt */
 
@@ -24,14 +24,13 @@ int main(int argc, char **argv){
     pthread_t LucyThread;
     LucyData.Name = "Lucy";
     LucyData.MutexPtr = &mutex;
-    LucyData.ProdValPtr = &value;
+    LucyData.ProdValPtr = &prod_value;
 
     PRODUCER FrogData;
     pthread_t FrogThread;
     FrogData.Name = "Crunchy Frog Bite";
     FrogData.MutexPtr = &mutex;
-    FrogData.ProdValPtr = &value;
-
+    FrogData.ProdValPtr = &prod_value;
 
     int Option = 0;
 
@@ -60,4 +59,16 @@ int main(int argc, char **argv){
             exit(1);	/* exit program */
         }
   }
+
+  /* create 1st semaphore */
+  if(sem_init(&mutex, 0, 1) == -1){
+    exit(1);
+  }
+
+  pthread_create(&FrogThread, NULL, FrogProducer, &FrogData);
+
+  pthread_join(FrogThread, NULL);
+
+
+
 }

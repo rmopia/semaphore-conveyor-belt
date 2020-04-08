@@ -5,7 +5,7 @@ BeltQueue::BeltQueue(int len){
     this->head = 0;
     this->tail = 0;
     this->max_len = len;
-    this->qu = new int;
+    this->qu = new int[max_len];
     for(int i = 0; i < max_len; i++){
         this->qu[i] = 0;
     }
