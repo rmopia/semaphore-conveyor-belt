@@ -1,0 +1,27 @@
+# depslib dependency file v1.0
+1586314870 source:c:\cppprojects\a05\main.cpp
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<semaphore.h>
+	<pthread.h>
+	<iostream>
+	<deque>
+	"belt.h"
+	"consumer.h"
+	"producer.h"
+
+1586291571 source:c:\cppprojects\a05\consumer.c
+
+1586291590 source:c:\cppprojects\a05\producer.c
+
+1586318617 c:\cppprojects\a05\belt.h
+	<queue>
+
+1586301405 c:\cppprojects\a05\consumer.h
+
+1586301506 c:\cppprojects\a05\producer.h
+
+1586318617 source:c:\cppprojects\a05\belt.c
+	"belt.h"
+
