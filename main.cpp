@@ -12,23 +12,26 @@
 using namespace std;
 
 int main(int argc, char **argv){
+    sem_t mutex;
+    int value = 0;
+    int ProductionValue; /* amount of candies produced  */
+    int OnBeltValue; /* current amount of candies on the belt */
 
     BeltQueue *bq = new BeltQueue(10);
-    bq->push(2);
-    bq->push(3);
-    bq->push(4);
-    cout << bq->max_len << endl;
-    cout << bq->pop() << endl;
+    bq->printQueue();
 
     CONSUMER LucyData;
     pthread_t LucyThread;
+    LucyData.Name = "Lucy";
+    LucyData.MutexPtr = &mutex;
+    LucyData.ProdValPtr = &value;
 
     PRODUCER FrogData;
     pthread_t FrogThread;
+    FrogData.Name = "Crunchy Frog Bite";
+    FrogData.MutexPtr = &mutex;
+    FrogData.ProdValPtr = &value;
 
-    sem_t mutex;
-    int ProductionValue; /* amount of candies produced  */
-    int OnBeltValue; /* current amount of candies on the belt */
 
     int Option = 0;
 
@@ -40,11 +43,11 @@ int main(int argc, char **argv){
             break;
         case 'L': /* how long to consume via Lucy */
             cout << optarg << endl;
-            //DecrementData.N = atoi(optarg);
+            LucyData.consume_time = atoi(optarg);
             break;
         case 'f':  /* how long to produce crunchy frog bite */
             cout << optarg << endl;
-            //IncrementData.N = atoi(optarg);	/* Get value from string */
+            FrogData.produce_time = atoi(optarg);
             break;
         case 'e': /* how long to produce everlasting escargo sucker */
             cout << optarg << endl;

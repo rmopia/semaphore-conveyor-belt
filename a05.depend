@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1586314870 source:c:\cppprojects\a05\main.cpp
+1586331192 source:c:\cppprojects\a05\main.cpp
 	<stdio.h>
 	<stdlib.h>
 	<unistd.h>
@@ -15,13 +15,14 @@
 
 1586291590 source:c:\cppprojects\a05\producer.c
 
-1586318617 c:\cppprojects\a05\belt.h
+1586331003 c:\cppprojects\a05\belt.h
 	<queue>
 
 1586301405 c:\cppprojects\a05\consumer.h
 
 1586301506 c:\cppprojects\a05\producer.h
 
-1586318617 source:c:\cppprojects\a05\belt.c
+1586331564 source:c:\cppprojects\a05\belt.c
+	<iostream>
 	"belt.h"
 

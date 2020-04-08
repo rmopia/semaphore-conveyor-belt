@@ -14,11 +14,12 @@ typedef enum{
 
 class BeltQueue{
     public:
-        int fr, tail, max_len;
+        int head, tail, max_len;
         int *qu;
         BeltQueue(int len);
         void push(int candy);
         int pop();
+        void printQueue();
 };
 
 #endif // BELT_HEADER
