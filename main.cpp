@@ -89,9 +89,9 @@ int main(int argc, char **argv){
   }
 
   pthread_create(&FrogThread, NULL, FrogProducer, &FrogData);
+  pthread_create(&LucyThread, NULL, LucyConsumer, &LucyData);
 
   pthread_join(FrogThread, NULL);
-
-
+  pthread_join(LucyThread, NULL);
 
 }

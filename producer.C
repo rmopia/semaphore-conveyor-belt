@@ -20,7 +20,7 @@ void* FrogProducer(void* voidPtr){
 
         sem_wait(dataPtr->AvailablePtr);
 
-        sem_wait(dataPtr->MutexPtr); /* entry */
+        sem_wait(dataPtr->MutexPtr); /* mutex down */
 
         /* total production value */
         cout << "here is: " << *(dataPtr->FrogPtr) << "\n" << flush;
@@ -29,7 +29,7 @@ void* FrogProducer(void* voidPtr){
         *(dataPtr->ProdValPtr)+=1;
         *(dataPtr->FrogPtr)+=1;
 
-        sem_post(dataPtr->MutexPtr); /* exit */
+        sem_post(dataPtr->MutexPtr); /* mutex up */
 
         sem_post(dataPtr->UnconsumedPtr);
 

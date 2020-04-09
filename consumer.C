@@ -12,10 +12,17 @@ void *LucyConsumer(void* voidPtr){
 
     while(*(dataPtr->ConsumedValPtr) < 100){
 
+        Sleep(dataPtr->consume_time);
+
+        sem_wait(dataPtr->UnconsumedPtr);
         sem_wait(dataPtr->MutexPtr);
+
         /* critical section that removes first item */
+        *(dataPtr->ConsumedValPtr) += 1;
+        cout << dataPtr->BQPtr->pop() << "\n" << flush;
 
         sem_post(dataPtr->MutexPtr);
+        sem_post(dataPtr->AvailablePtr);
 
     }
 }

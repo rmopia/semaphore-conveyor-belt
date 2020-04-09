@@ -18,4 +18,6 @@ typedef struct{
     //int *OnBeltPtr; /* current total amount of candies on belt */
 } CONSUMER;
 
+void *LucyConsumer(void* voidPtr);
+
 #endif // CONSUMER_HEADER

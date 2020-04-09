@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1586397443 source:c:\cppprojects\a05\main.cpp
+1586398070 source:c:\cppprojects\a05\main.cpp
 	<stdio.h>
 	<stdlib.h>
 	<unistd.h>
@@ -11,9 +11,15 @@
 	"consumer.h"
 	"producer.h"
 
-1586291571 source:c:\cppprojects\a05\consumer.c
+1586398070 source:c:\cppprojects\a05\consumer.c
+	<unistd.h>
+	<windows.h>
+	<semaphore.h>
+	<iostream>
+	"consumer.h"
+	"belt.h"
 
-1586397387 source:c:\cppprojects\a05\producer.c
+1586398070 source:c:\cppprojects\a05\producer.c
 	<unistd.h>
 	<windows.h>
 	<semaphore.h>
@@ -24,11 +30,11 @@
 1586397387 c:\cppprojects\a05\belt.h
 	<queue>
 
-1586397387 c:\cppprojects\a05\consumer.h
+1586398135 c:\cppprojects\a05\consumer.h
 	"belt.h"
 	"semaphore.h"
 
-1586396650 c:\cppprojects\a05\producer.h
+1586398135 c:\cppprojects\a05\producer.h
 	"belt.h"
 	"semaphore.h"
 

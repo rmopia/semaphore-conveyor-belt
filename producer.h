@@ -17,6 +17,6 @@ typedef struct{
     //int *OnBeltPtr; /* current total amount of candies on belt */
 } PRODUCER;
 
-void * FrogProducer(void * voidPtr);
+void* FrogProducer(void* voidPtr);
 
 #endif // PRODUCER_HEADER
