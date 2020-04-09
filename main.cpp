@@ -13,7 +13,12 @@ using namespace std;
 
 int main(int argc, char **argv){
     sem_t mutex;
+    sem_t unconsumed; /* current space taken up on conveyor belt */
+    sem_t available_slots; /* current available space on conveyor belt */
     int prod_value = 0;
+    int frog_amount = 0;
+    int consumed = 0; /* of the 1-100, how many are currently consumed */
+    //int escargo_amount = 0;
     int ProductionValue; /* amount of candies produced  */
     int OnBeltValue; /* current amount of candies on the belt */
 
@@ -24,13 +29,22 @@ int main(int argc, char **argv){
     pthread_t LucyThread;
     LucyData.Name = "Lucy";
     LucyData.MutexPtr = &mutex;
+    LucyData.ConsumedValPtr = &consumed;
+    LucyData.UnconsumedPtr = &unconsumed;
+    LucyData.AvailablePtr = &available_slots;
     LucyData.ProdValPtr = &prod_value;
+    LucyData.FrogPtr = &frog_amount;
+    LucyData.BQPtr = bq;
 
     PRODUCER FrogData;
     pthread_t FrogThread;
     FrogData.Name = "Crunchy Frog Bite";
     FrogData.MutexPtr = &mutex;
+    FrogData.UnconsumedPtr = &unconsumed;
+    FrogData.AvailablePtr = &available_slots;
     FrogData.ProdValPtr = &prod_value;
+    FrogData.FrogPtr = &frog_amount;
+    FrogData.BQPtr = bq;
 
     int Option = 0;
 
@@ -62,6 +76,15 @@ int main(int argc, char **argv){
 
   /* create 1st semaphore */
   if(sem_init(&mutex, 0, 1) == -1){
+    exit(1);
+  }
+
+  /* following semaphores follow a ratio of 0:10 i.e. 3 unconsumed:7 slots */
+  if(sem_init(&unconsumed, 0, 0) == -1){
+    exit(1);
+  }
+
+  if(sem_init(&available_slots, 0, bq->max_len) == -1){
     exit(1);
   }
 

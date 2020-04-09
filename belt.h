@@ -2,10 +2,11 @@
 #ifndef BELT_HEADER
 #define BELT_HEADER
 
+/*
 typedef enum{
     INCREMENT,
     DECREMENT
-} OPERATION;
+} OPERATION;*/
 
 typedef enum{
     FROG=1,
