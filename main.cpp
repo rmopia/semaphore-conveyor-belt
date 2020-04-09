@@ -15,8 +15,9 @@ int main(int argc, char **argv){
     sem_t mutex;
     sem_t unconsumed; /* current space taken up on conveyor belt */
     sem_t available_slots; /* current available space on conveyor belt */
-    int prod_value = 0;
-    int frog_amount = 0;
+    int total_candies = 0;
+    int total_frogs = 0;
+    int frogs_on_belt = 0;
     int consumed = 0; /* of the 1-100, how many are currently consumed */
     //int escargo_amount = 0;
     int ProductionValue; /* amount of candies produced  */
@@ -27,23 +28,29 @@ int main(int argc, char **argv){
 
     CONSUMER LucyData;
     pthread_t LucyThread;
+    int l_frog_consumed = 0;
+    //int l_escargot_consumed = 0;
     LucyData.Name = "Lucy";
     LucyData.MutexPtr = &mutex;
     LucyData.ConsumedValPtr = &consumed;
+    LucyData.ConsumedFrogPtr = &l_frog_consumed;
+    //LucyData.ConsumedEsacrgotPtr = &l_escargot_consumed;
     LucyData.UnconsumedPtr = &unconsumed;
     LucyData.AvailablePtr = &available_slots;
-    LucyData.ProdValPtr = &prod_value;
-    LucyData.FrogPtr = &frog_amount;
+    LucyData.ProdValPtr = &total_candies;
+    LucyData.FrogPtr = &total_frogs;
+    LucyData.FrogBeltPtr = &frogs_on_belt;
     LucyData.BQPtr = bq;
 
     PRODUCER FrogData;
     pthread_t FrogThread;
-    FrogData.Name = "Crunchy Frog Bite";
+    FrogData.Name = "crunchy frog bite";
     FrogData.MutexPtr = &mutex;
     FrogData.UnconsumedPtr = &unconsumed;
     FrogData.AvailablePtr = &available_slots;
-    FrogData.ProdValPtr = &prod_value;
-    FrogData.FrogPtr = &frog_amount;
+    FrogData.ProdValPtr = &total_candies;
+    FrogData.FrogPtr = &total_frogs;
+    FrogData.FrogBeltPtr = &frogs_on_belt;
     FrogData.BQPtr = bq;
 
     int Option = 0;
@@ -74,24 +81,37 @@ int main(int argc, char **argv){
         }
   }
 
-  /* create 1st semaphore */
-  if(sem_init(&mutex, 0, 1) == -1){
+    /* create 1st semaphore */
+    if(sem_init(&mutex, 0, 1) == -1){
     exit(1);
-  }
+    }
 
-  /* following semaphores follow a ratio of 0:10 i.e. 3 unconsumed:7 slots */
-  if(sem_init(&unconsumed, 0, 0) == -1){
+    /* following semaphores follow a ratio of 0:10 i.e. 3 unconsumed:7 slots */
+    if(sem_init(&unconsumed, 0, 0) == -1){
     exit(1);
-  }
+    }
 
-  if(sem_init(&available_slots, 0, bq->max_len) == -1){
+    if(sem_init(&available_slots, 0, bq->max_len) == -1){
     exit(1);
-  }
+    }
 
-  pthread_create(&FrogThread, NULL, FrogProducer, &FrogData);
-  pthread_create(&LucyThread, NULL, LucyConsumer, &LucyData);
+    /* producer threads */
+    pthread_create(&FrogThread, NULL, FrogProducer, &FrogData);
 
-  pthread_join(FrogThread, NULL);
-  pthread_join(LucyThread, NULL);
+    /* consumer threads */
+    pthread_create(&LucyThread, NULL, LucyConsumer, &LucyData);
+
+    pthread_join(FrogThread, NULL);
+    pthread_join(LucyThread, NULL);
+
+    cout << endl;
+    cout << "PRODUCTION REPORT" << endl;
+    for(int i = 0; i < 40; i++){
+    cout << "-";
+    }
+    cout << endl;
+    cout << FrogData.Name << " producer generated " << *(FrogData.FrogPtr) << " candies" << endl;
+    cout << endl;
+    cout << LucyData.Name << " consumed " << *(LucyData.ConsumedFrogPtr) << " " << FrogData.Name << "s + " << endl;
 
 }

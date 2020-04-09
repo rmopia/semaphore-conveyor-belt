@@ -10,7 +10,7 @@ typedef enum{
 
 typedef enum{
     FROG=1,
-    ESCARGO=2
+    ESCARGOT=2
 } CANDY;
 
 class BeltQueue{

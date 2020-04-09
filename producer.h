@@ -12,8 +12,9 @@ typedef struct{
     sem_t *UnconsumedPtr;
     sem_t *AvailablePtr;
     int *ProdValPtr; /* current total amount of candies produced */
-    int *EscargoPtr;
+    int *EscargotPtr;
     int *FrogPtr;
+    int *FrogBeltPtr;
     //int *OnBeltPtr; /* current total amount of candies on belt */
 } PRODUCER;
 
