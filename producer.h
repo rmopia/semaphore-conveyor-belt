@@ -13,11 +13,12 @@ typedef struct{
     sem_t *AvailablePtr;
     int *ProdValPtr; /* current total amount of candies produced */
     int *EscargotPtr;
+    int *EscargotBeltPtr;
     int *FrogPtr;
     int *FrogBeltPtr;
-    //int *OnBeltPtr; /* current total amount of candies on belt */
 } PRODUCER;
 
 void* FrogProducer(void* voidPtr);
+void* EscargotProducer(void* voidPtr);
 
 #endif // PRODUCER_HEADER

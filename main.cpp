@@ -15,13 +15,12 @@ int main(int argc, char **argv){
     sem_t mutex;
     sem_t unconsumed; /* current space taken up on conveyor belt */
     sem_t available_slots; /* current available space on conveyor belt */
-    int total_candies = 0;
+    int total_produced = 0; /* total amount of candies produced */
     int total_frogs = 0;
+    int total_escargot = 0;
     int frogs_on_belt = 0;
-    int consumed = 0; /* of the 1-100, how many are currently consumed */
-    //int escargo_amount = 0;
-    int ProductionValue; /* amount of candies produced  */
-    int OnBeltValue; /* current amount of candies on the belt */
+    int escargot_on_belt = 0;
+    int total_consumed = 0; /* of the 1-100, how many are currently consumed */
 
     BeltQueue *bq = new BeltQueue(10);
     bq->printQueue();
@@ -29,15 +28,15 @@ int main(int argc, char **argv){
     CONSUMER LucyData;
     pthread_t LucyThread;
     int l_frog_consumed = 0;
-    //int l_escargot_consumed = 0;
+    int l_escargot_consumed = 0;
     LucyData.Name = "Lucy";
     LucyData.MutexPtr = &mutex;
-    LucyData.ConsumedValPtr = &consumed;
-    LucyData.ConsumedFrogPtr = &l_frog_consumed;
-    //LucyData.ConsumedEsacrgotPtr = &l_escargot_consumed;
     LucyData.UnconsumedPtr = &unconsumed;
     LucyData.AvailablePtr = &available_slots;
-    LucyData.ProdValPtr = &total_candies;
+    LucyData.ConsumedValPtr = &total_consumed;
+    LucyData.ConsumedFrogPtr = &l_frog_consumed;
+    LucyData.ConsumedEsacrgotPtr = &l_escargot_consumed;
+    LucyData.ProdValPtr = &total_produced;
     LucyData.FrogPtr = &total_frogs;
     LucyData.FrogBeltPtr = &frogs_on_belt;
     LucyData.BQPtr = bq;
@@ -48,51 +47,64 @@ int main(int argc, char **argv){
     FrogData.MutexPtr = &mutex;
     FrogData.UnconsumedPtr = &unconsumed;
     FrogData.AvailablePtr = &available_slots;
-    FrogData.ProdValPtr = &total_candies;
+    FrogData.ProdValPtr = &total_produced;
     FrogData.FrogPtr = &total_frogs;
     FrogData.FrogBeltPtr = &frogs_on_belt;
+    FrogData.EscargotPtr = &total_escargot;
+    FrogData.EscargotBeltPtr = &escargot_on_belt;
     FrogData.BQPtr = bq;
+
+    PRODUCER EscargotData;
+    pthread_t EscargotThread;
+    EscargotData.Name = "everlasting escargot sucker";
+    EscargotData.MutexPtr = &mutex;
+    EscargotData.UnconsumedPtr = &unconsumed;
+    EscargotData.AvailablePtr = &available_slots;
+    EscargotData.ProdValPtr = &total_produced;
+    EscargotData.FrogPtr = &total_frogs;
+    EscargotData.FrogBeltPtr = &frogs_on_belt;
+    EscargotData.EscargotPtr = &total_escargot;
+    EscargotData.EscargotBeltPtr = &escargot_on_belt;
+    EscargotData.BQPtr = bq;
 
     int Option = 0;
 
     while ((Option = getopt(argc, argv, "E:L:f:e:")) != -1) {
         switch (Option) {
-        case 'E': /* how long to consume via Ethel */
+        case 'E': /* how long it takes Ethel to consume 1 candy */
             cout << optarg << endl;
-            //IncrementData.N = atoi(optarg);	/* Get value from string */
+            /*********************************************************************************/
             break;
-        case 'L': /* how long to consume via Lucy */
+        case 'L': /* how long it takes Lucy to consume 1 candy */
             cout << optarg << endl;
             LucyData.consume_time = atoi(optarg);
             break;
-        case 'f':  /* how long to produce crunchy frog bite */
+        case 'f':  /* how long to produce a crunchy frog bite */
             cout << optarg << endl;
             FrogData.produce_time = atoi(optarg);
             break;
-        case 'e': /* how long to produce everlasting escargo sucker */
+        case 'e': /* how long to produce a everlasting escargot sucker */
             cout << optarg << endl;
-            //IncrementData.N = atoi(optarg);
+            EscargotData.produce_time = atoi(optarg);
             break;
-        default:	/* Handle help & illegal args */
+        default: /* deals with invalid args from user */
             cout << "Invalid argument found." << endl;
-            /* argv[0] - has executable name */
-            //printf(USAGE, INCREMENT_TIMES_DEFAULT, DECREMENT_TIMES_DEFAULT);
-            exit(1);	/* exit program */
+            exit(1); /* exits program */
         }
   }
 
     /* create 1st semaphore */
     if(sem_init(&mutex, 0, 1) == -1){
-    exit(1);
+        exit(1);
     }
 
     /* following semaphores follow a ratio of 0:10 i.e. 3 unconsumed:7 slots */
     if(sem_init(&unconsumed, 0, 0) == -1){
-    exit(1);
+        exit(1);
     }
 
     if(sem_init(&available_slots, 0, bq->max_len) == -1){
-    exit(1);
+        exit(1);
     }
 
     /* producer threads */

@@ -22,12 +22,12 @@ void *LucyConsumer(void* voidPtr){
         if(dataPtr->BQPtr->pop() == FROG){
             *(dataPtr->ConsumedFrogPtr) += 1;
             *(dataPtr->FrogBeltPtr) -= 1;
+            cout << "popped: FROG \n" << flush;
         }
         else if(dataPtr->BQPtr->pop() == ESCARGOT){
             //*(dataPtr->EscargotBeltPtr) -= 1;
         }
 
-        //cout << "pop: ";
         //dataPtr->BQPtr->printQueue();
 
         sem_post(dataPtr->MutexPtr);

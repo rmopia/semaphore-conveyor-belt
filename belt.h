@@ -18,7 +18,7 @@ class BeltQueue{
         int head, tail, max_len;
         int *qu;
         BeltQueue(int len);
-        void push(int candy);
+        void push(CANDY candy);
         int pop();
         void printQueue();
 };
