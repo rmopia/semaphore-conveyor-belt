@@ -11,16 +11,14 @@ typedef struct{
     sem_t *MutexPtr;
     sem_t *UnconsumedPtr;
     sem_t *AvailablePtr;
-    int *ProdValPtr; /* current total amount of candies produced */
     int *ConsumedValPtr;
     int *ConsumedFrogPtr;
-    int *ConsumedEsacrgotPtr;
-    int *EscargotPtr;
-    int *FrogPtr;
+    int *ConsumedEscargotPtr;
+    int *EscargotBeltPtr;
     int *FrogBeltPtr;
-    //int *OnBeltPtr; /* current total amount of candies on belt */
 } CONSUMER;
 
 void *LucyConsumer(void* voidPtr);
+void *EthelConsumer(void* voidPtr);
 
 #endif // CONSUMER_HEADER

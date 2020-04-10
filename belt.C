@@ -11,7 +11,7 @@ BeltQueue::BeltQueue(int len){
     }
 }
 
-void BeltQueue::push(CANDY candy){
+void BeltQueue::push(int candy){
     if(this->max_len != this->tail){
         this->qu[this->tail] = candy;
         this->tail++;

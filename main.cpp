@@ -4,7 +4,6 @@
 #include <semaphore.h>
 #include <pthread.h>
 #include <iostream>
-#include <deque>
 #include "belt.h"
 #include "consumer.h"
 #include "producer.h"
@@ -23,23 +22,36 @@ int main(int argc, char **argv){
     int total_consumed = 0; /* of the 1-100, how many are currently consumed */
 
     BeltQueue *bq = new BeltQueue(10);
-    bq->printQueue();
 
-    CONSUMER LucyData;
-    pthread_t LucyThread;
     int l_frog_consumed = 0;
     int l_escargot_consumed = 0;
+    CONSUMER LucyData;
+    pthread_t LucyThread;
     LucyData.Name = "Lucy";
     LucyData.MutexPtr = &mutex;
     LucyData.UnconsumedPtr = &unconsumed;
     LucyData.AvailablePtr = &available_slots;
     LucyData.ConsumedValPtr = &total_consumed;
     LucyData.ConsumedFrogPtr = &l_frog_consumed;
-    LucyData.ConsumedEsacrgotPtr = &l_escargot_consumed;
-    LucyData.ProdValPtr = &total_produced;
-    LucyData.FrogPtr = &total_frogs;
+    LucyData.ConsumedEscargotPtr = &l_escargot_consumed;
     LucyData.FrogBeltPtr = &frogs_on_belt;
+    LucyData.EscargotBeltPtr = &escargot_on_belt;
     LucyData.BQPtr = bq;
+
+    int e_frog_consumed = 0;
+    int e_escargot_consumed = 0;
+    CONSUMER EthelData;
+    pthread_t EthelThread;
+    EthelData.Name = "Ethel";
+    EthelData.MutexPtr = &mutex;
+    EthelData.UnconsumedPtr = &unconsumed;
+    EthelData.AvailablePtr = &available_slots;
+    EthelData.ConsumedValPtr = &total_consumed;
+    EthelData.ConsumedFrogPtr = &e_frog_consumed;
+    EthelData.ConsumedEscargotPtr = &e_escargot_consumed;
+    EthelData.FrogBeltPtr = &frogs_on_belt;
+    EthelData.EscargotBeltPtr = &escargot_on_belt;
+    EthelData.BQPtr = bq;
 
     PRODUCER FrogData;
     pthread_t FrogThread;
@@ -56,7 +68,7 @@ int main(int argc, char **argv){
 
     PRODUCER EscargotData;
     pthread_t EscargotThread;
-    EscargotData.Name = "everlasting escargot sucker";
+    EscargotData.Name = "escargot sucker";
     EscargotData.MutexPtr = &mutex;
     EscargotData.UnconsumedPtr = &unconsumed;
     EscargotData.AvailablePtr = &available_slots;
@@ -73,7 +85,7 @@ int main(int argc, char **argv){
         switch (Option) {
         case 'E': /* how long it takes Ethel to consume 1 candy */
             cout << optarg << endl;
-            /*********************************************************************************/
+            EthelData.consume_time = atoi(optarg);
             break;
         case 'L': /* how long it takes Lucy to consume 1 candy */
             cout << optarg << endl;
@@ -109,21 +121,37 @@ int main(int argc, char **argv){
 
     /* producer threads */
     pthread_create(&FrogThread, NULL, FrogProducer, &FrogData);
+    pthread_create(&EscargotThread, NULL, EscargotProducer, &EscargotData);
 
     /* consumer threads */
     pthread_create(&LucyThread, NULL, LucyConsumer, &LucyData);
+    pthread_create(&EthelThread, NULL, EthelConsumer, &EthelData);
 
     pthread_join(FrogThread, NULL);
+    pthread_join(EscargotThread, NULL);
+
     pthread_join(LucyThread, NULL);
+    pthread_join(EthelThread, NULL);
 
     cout << endl;
     cout << "PRODUCTION REPORT" << endl;
     for(int i = 0; i < 40; i++){
-    cout << "-";
+        cout << "-";
     }
     cout << endl;
-    cout << FrogData.Name << " producer generated " << *(FrogData.FrogPtr) << " candies" << endl;
-    cout << endl;
-    cout << LucyData.Name << " consumed " << *(LucyData.ConsumedFrogPtr) << " " << FrogData.Name << "s + " << endl;
+    cout << FrogData.Name << " producer generated "
+    << *(FrogData.FrogPtr) << " candies" << endl;
+
+    cout << EscargotData.Name << " producer generated "
+    << *(EscargotData.EscargotPtr) << " candies" << endl;
+
+    cout << LucyData.Name << " consumed " << *(LucyData.ConsumedFrogPtr) <<
+    " crunchy frog bites + " << *(LucyData.ConsumedEscargotPtr) <<
+    " escargot suckers = " << *(LucyData.ConsumedFrogPtr) +
+    *(LucyData.ConsumedEscargotPtr) << endl;
+    cout << EthelData.Name << " consumed " << *(EthelData.ConsumedFrogPtr) <<
+    " crunchy frog bites + " << *(EthelData.ConsumedEscargotPtr) <<
+    " escargot suckers = " << *(EthelData.ConsumedFrogPtr) +
+    *(EthelData.ConsumedEscargotPtr) << endl;
 
 }

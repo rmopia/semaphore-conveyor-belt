@@ -21,7 +21,6 @@ void* FrogProducer(void* voidPtr){
             sem_wait(dataPtr->MutexPtr); /* mutex down */
 
             /* total production value */
-            //cout << "here is: " << *(dataPtr->FrogPtr) << "\n" << flush;
             dataPtr->BQPtr->push(FROG);
             *(dataPtr->ProdValPtr)+=1;
             *(dataPtr->FrogPtr)+=1;
@@ -29,8 +28,11 @@ void* FrogProducer(void* voidPtr){
             cout << "push: ";
             dataPtr->BQPtr->printQueue();
 
-            cout << "Belt: " << *(dataPtr->FrogBeltPtr) << " frogs + " << "0 escargots = " <<
-            *(dataPtr->FrogBeltPtr) + 0 << ". produced: " << *(dataPtr->ProdValPtr) << "\tAdded " << dataPtr->Name << endl;
+            cout << "Belt: " << *(dataPtr->FrogBeltPtr) << " frogs + " <<
+             *(dataPtr->EscargotBeltPtr) << " escargots = " <<
+             *(dataPtr->FrogBeltPtr) + *(dataPtr->EscargotBeltPtr) <<
+             ". produced: " << *(dataPtr->ProdValPtr) << "\tAdded " <<
+              dataPtr->Name << ".\n" << flush;
 
             sem_post(dataPtr->MutexPtr); /* mutex up */
             sem_post(dataPtr->UnconsumedPtr);
@@ -44,17 +46,39 @@ void* FrogProducer(void* voidPtr){
 void* EscargotProducer(void* voidPtr){
     PRODUCER *dataPtr = (PRODUCER*)(voidPtr);
     while(*(dataPtr->ProdValPtr) < 100){
+        /* only 3 frog bits allowed on belt b/c expensive */
+        if((*(dataPtr->FrogBeltPtr) == 3 && *(dataPtr->EscargotBeltPtr) < 7)||
+           ((*(dataPtr->FrogBeltPtr) == 2 && *(dataPtr->EscargotBeltPtr) < 8))||
+           ((*(dataPtr->FrogBeltPtr) == 1 && *(dataPtr->EscargotBeltPtr) < 9))||
+           ((*(dataPtr->FrogBeltPtr) == 0 && *(dataPtr->EscargotBeltPtr) < 10))){
+            // change sleep timer to nanosleep when we move code //
+            /*******************************************/
+            Sleep(dataPtr->produce_time); // 1000ms = 1s
+            /*******************************************/
 
-        sem_wait(dataPtr->AvailablePtr);
-        sem_wait(dataPtr->MutexPtr); /* mutex down */
+            sem_wait(dataPtr->AvailablePtr);
+            sem_wait(dataPtr->MutexPtr); /* mutex down */
 
-        dataPtr->BQPtr->push(ESCARGOT);
-        *(dataPtr->ProdValPtr)+=1;
-        *(dataPtr->EscargotPtr)+=1;
-        *(dataPtr->EscargotBeltPtr)+=1;
+            /* total production value */
+            //cout << "here is: " << *(dataPtr->FrogPtr) << "\n" << flush;
+            dataPtr->BQPtr->push(ESCARGOT);
+            *(dataPtr->ProdValPtr)+=1;
+            *(dataPtr->EscargotPtr)+=1;
+            *(dataPtr->EscargotBeltPtr)+=1;
+            cout << "push: ";
+            dataPtr->BQPtr->printQueue();
 
-        sem_post(dataPtr->MutexPtr); /* mutex up */
-        sem_post(dataPtr->UnconsumedPtr);
+            cout << "Belt: " << *(dataPtr->FrogBeltPtr) << " frogs + " <<
+             *(dataPtr->EscargotBeltPtr) << " escargots = " <<
+             *(dataPtr->FrogBeltPtr) + *(dataPtr->EscargotBeltPtr) <<
+             ". produced: " << *(dataPtr->ProdValPtr) << "\tAdded " <<
+              dataPtr->Name << ".\n" << flush;
 
+            sem_post(dataPtr->MutexPtr); /* mutex up */
+            sem_post(dataPtr->UnconsumedPtr);
+        }
+        else{
+            continue;
+        }
     }
 }

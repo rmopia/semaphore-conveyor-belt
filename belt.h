@@ -2,12 +2,6 @@
 #ifndef BELT_HEADER
 #define BELT_HEADER
 
-/*
-typedef enum{
-    INCREMENT,
-    DECREMENT
-} OPERATION;*/
-
 typedef enum{
     FROG=1,
     ESCARGOT=2
@@ -18,7 +12,7 @@ class BeltQueue{
         int head, tail, max_len;
         int *qu;
         BeltQueue(int len);
-        void push(CANDY candy);
+        void push(int candy);
         int pop();
         void printQueue();
 };
