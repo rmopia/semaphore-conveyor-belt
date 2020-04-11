@@ -13,10 +13,10 @@ void* FrogProducer(void* voidPtr){
     while(*(dataPtr->ProdValPtr) < 100){
         /* only 3 frog bits allowed on belt at a time b/c expensive */
         if(*(dataPtr->FrogBeltPtr) < 3){
-            // change sleep timer to nanosleep when we move code //
-            /*******************************************/
+            /* sleep to mimic produce time */
+            /* milliseconds converted to seconds as sleep() takes in seconds */
+            //sleep((dataPtr->produce_time)/1000);
             Sleep(dataPtr->produce_time); // 1000ms = 1s
-            /*******************************************/
 
             sem_wait(dataPtr->AvailablePtr); /* conveyor belt slots down */
             sem_wait(dataPtr->MutexPtr); /* mutex down */
@@ -53,11 +53,8 @@ void* EscargotProducer(void* voidPtr){
         ((*(dataPtr->FrogBeltPtr) == 2 && *(dataPtr->EscargotBeltPtr) < 8))||
         ((*(dataPtr->FrogBeltPtr) == 1 && *(dataPtr->EscargotBeltPtr) < 9))||
         ((*(dataPtr->FrogBeltPtr) == 0 && *(dataPtr->EscargotBeltPtr) < 10))){
-            // change sleep timer to nanosleep when we move code //
-            /*******************************************/
+            //sleep((dataPtr->produce_time)/1000);
             Sleep(dataPtr->produce_time); // 1000ms = 1s
-            /*******************************************/
-
             sem_wait(dataPtr->AvailablePtr); /* conveyor belt slots down */
             sem_wait(dataPtr->MutexPtr); /* mutex down */
 

@@ -14,6 +14,7 @@ void *Consumer(void* voidPtr){
     while(*(dataPtr->ConsumedValPtr) < 100){
         /* if queue is not empty we proceed */
         if(dataPtr->BQPtr->head != dataPtr->BQPtr->tail){
+            //sleep((dataPtr->consume_time)/1000);
             Sleep(dataPtr->consume_time);
             /* unconsumed candy on belt goes down */
             sem_wait(dataPtr->UnconsumedPtr);

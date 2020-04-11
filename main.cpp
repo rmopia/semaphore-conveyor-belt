@@ -154,4 +154,5 @@ int main(int argc, char **argv){
     " crunchy frog bites + " << *(EthelData.ConsumedEscargotPtr) <<
     " escargot suckers = " << *(EthelData.ConsumedFrogPtr) +
     *(EthelData.ConsumedEscargotPtr) << endl;
+
 }
