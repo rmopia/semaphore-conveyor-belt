@@ -8,26 +8,28 @@
 using namespace std;
 
 void* FrogProducer(void* voidPtr){
+    /* convert void ptr to a producer ptr to use data */
     PRODUCER *dataPtr = (PRODUCER*)(voidPtr);
     while(*(dataPtr->ProdValPtr) < 100){
-        /* only 3 frog bits allowed on belt b/c expensive */
+        /* only 3 frog bits allowed on belt at a time b/c expensive */
         if(*(dataPtr->FrogBeltPtr) < 3){
             // change sleep timer to nanosleep when we move code //
             /*******************************************/
             Sleep(dataPtr->produce_time); // 1000ms = 1s
             /*******************************************/
 
-            sem_wait(dataPtr->AvailablePtr);
+            sem_wait(dataPtr->AvailablePtr); /* conveyor belt slots down */
             sem_wait(dataPtr->MutexPtr); /* mutex down */
 
-            /* total production value */
+            /* frog added to queue */
             dataPtr->BQPtr->push(FROG);
-            *(dataPtr->ProdValPtr)+=1;
-            *(dataPtr->FrogPtr)+=1;
-            *(dataPtr->FrogBeltPtr)+=1;
-            cout << "push: ";
-            dataPtr->BQPtr->printQueue();
+            /* associated frog data is filled in */
+            *(dataPtr->ProdValPtr) += 1;
+            *(dataPtr->FrogPtr) += 1;
+            *(dataPtr->FrogBeltPtr) += 1;
 
+            /* output of what's been produced and what's on the belt */
+            /* as well as what was just produced */
             cout << "Belt: " << *(dataPtr->FrogBeltPtr) << " frogs + " <<
              *(dataPtr->EscargotBeltPtr) << " escargots = " <<
              *(dataPtr->FrogBeltPtr) + *(dataPtr->EscargotBeltPtr) <<
@@ -35,7 +37,7 @@ void* FrogProducer(void* voidPtr){
               dataPtr->Name << ".\n" << flush;
 
             sem_post(dataPtr->MutexPtr); /* mutex up */
-            sem_post(dataPtr->UnconsumedPtr);
+            sem_post(dataPtr->UnconsumedPtr); /* candy on belt up */
         }
         else{
             continue;
@@ -46,28 +48,27 @@ void* FrogProducer(void* voidPtr){
 void* EscargotProducer(void* voidPtr){
     PRODUCER *dataPtr = (PRODUCER*)(voidPtr);
     while(*(dataPtr->ProdValPtr) < 100){
-        /* only 3 frog bits allowed on belt b/c expensive */
+        /* no particular limit on escargot suckers */
         if((*(dataPtr->FrogBeltPtr) == 3 && *(dataPtr->EscargotBeltPtr) < 7)||
-           ((*(dataPtr->FrogBeltPtr) == 2 && *(dataPtr->EscargotBeltPtr) < 8))||
-           ((*(dataPtr->FrogBeltPtr) == 1 && *(dataPtr->EscargotBeltPtr) < 9))||
-           ((*(dataPtr->FrogBeltPtr) == 0 && *(dataPtr->EscargotBeltPtr) < 10))){
+        ((*(dataPtr->FrogBeltPtr) == 2 && *(dataPtr->EscargotBeltPtr) < 8))||
+        ((*(dataPtr->FrogBeltPtr) == 1 && *(dataPtr->EscargotBeltPtr) < 9))||
+        ((*(dataPtr->FrogBeltPtr) == 0 && *(dataPtr->EscargotBeltPtr) < 10))){
             // change sleep timer to nanosleep when we move code //
             /*******************************************/
             Sleep(dataPtr->produce_time); // 1000ms = 1s
             /*******************************************/
 
-            sem_wait(dataPtr->AvailablePtr);
+            sem_wait(dataPtr->AvailablePtr); /* conveyor belt slots down */
             sem_wait(dataPtr->MutexPtr); /* mutex down */
 
-            /* total production value */
-            //cout << "here is: " << *(dataPtr->FrogPtr) << "\n" << flush;
+            /* add an escargot to the queue */
             dataPtr->BQPtr->push(ESCARGOT);
-            *(dataPtr->ProdValPtr)+=1;
-            *(dataPtr->EscargotPtr)+=1;
-            *(dataPtr->EscargotBeltPtr)+=1;
-            cout << "push: ";
-            dataPtr->BQPtr->printQueue();
+            /* fill in associated escargot data */
+            *(dataPtr->ProdValPtr) += 1;
+            *(dataPtr->EscargotPtr) += 1;
+            *(dataPtr->EscargotBeltPtr) += 1;
 
+            /* output of what's been produced and what's on the belt */
             cout << "Belt: " << *(dataPtr->FrogBeltPtr) << " frogs + " <<
              *(dataPtr->EscargotBeltPtr) << " escargots = " <<
              *(dataPtr->FrogBeltPtr) + *(dataPtr->EscargotBeltPtr) <<
@@ -75,7 +76,7 @@ void* EscargotProducer(void* voidPtr){
               dataPtr->Name << ".\n" << flush;
 
             sem_post(dataPtr->MutexPtr); /* mutex up */
-            sem_post(dataPtr->UnconsumedPtr);
+            sem_post(dataPtr->UnconsumedPtr); /* unconsumed candy on belt up */
         }
         else{
             continue;

@@ -7,53 +7,48 @@
 
 using namespace std;
 
-void *LucyConsumer(void* voidPtr){
+/* both Ethel and Lucy use this process but in separate threads */
+void *Consumer(void* voidPtr){
+    /* convert pointer for data use */
     CONSUMER *dataPtr = (CONSUMER*)(voidPtr);
     while(*(dataPtr->ConsumedValPtr) < 100){
         /* if queue is not empty we proceed */
         if(dataPtr->BQPtr->head != dataPtr->BQPtr->tail){
             Sleep(dataPtr->consume_time);
+            /* unconsumed candy on belt goes down */
             sem_wait(dataPtr->UnconsumedPtr);
-            sem_wait(dataPtr->MutexPtr);
+            sem_wait(dataPtr->MutexPtr); /* mutex down */
+            /* if value popped out is a frog */
             if(dataPtr->BQPtr->pop() == FROG){
+                /* increment/decrement required data in struct */
                 *(dataPtr->ConsumedFrogPtr) += 1;
                 *(dataPtr->FrogBeltPtr) -= 1;
-                cout << "popped: FROG \n" << flush;
                 *(dataPtr->ConsumedValPtr) += 1;
-            }
-            else{
-                *(dataPtr->ConsumedEscargotPtr) += 1;
-                *(dataPtr->EscargotBeltPtr) -= 1;
-                cout << "popped: ESCARGOT \n" << flush;
-                *(dataPtr->ConsumedValPtr) += 1;
-            }
-            sem_post(dataPtr->MutexPtr);
-            sem_post(dataPtr->AvailablePtr);
-        }
-    }
-}
 
-void *EthelConsumer(void* voidPtr){
-    CONSUMER *dataPtr = (CONSUMER*)(voidPtr);
-    while(*(dataPtr->ConsumedValPtr) < 100){
-        if(dataPtr->BQPtr->head != dataPtr->BQPtr->tail){
-            Sleep(dataPtr->consume_time);
-            sem_wait(dataPtr->UnconsumedPtr);
-            sem_wait(dataPtr->MutexPtr);
-            if(dataPtr->BQPtr->pop() == FROG){
-                *(dataPtr->ConsumedFrogPtr) += 1;
-                *(dataPtr->FrogBeltPtr) -= 1;
-                cout << "popped: FROG \n" << flush;
-                *(dataPtr->ConsumedValPtr) += 1;
+                /* output of what's been produced and what's on the belt */
+                /* as well as who just consumed a candy */
+                cout << "Belt: " << *(dataPtr->FrogBeltPtr) << " frogs + " <<
+                *(dataPtr->EscargotBeltPtr) << " escargots = " <<
+                *(dataPtr->FrogBeltPtr) + *(dataPtr->EscargotBeltPtr) <<
+                ". produced: " << *(dataPtr->ProdValPtr) << "\t" <<
+                (dataPtr->Name) << " consumed crunchy frog bite" <<
+                ".\n" << flush;
             }
+            /* if value popped out is an escargot */
             else{
                 *(dataPtr->ConsumedEscargotPtr) += 1;
                 *(dataPtr->EscargotBeltPtr) -= 1;
-                cout << "popped: ESCARGOT \n" << flush;
                 *(dataPtr->ConsumedValPtr) += 1;
+
+                cout << "Belt: " << *(dataPtr->FrogBeltPtr) << " frogs + " <<
+                *(dataPtr->EscargotBeltPtr) << " escargots = " <<
+                *(dataPtr->FrogBeltPtr) + *(dataPtr->EscargotBeltPtr) <<
+                ". produced: " << *(dataPtr->ProdValPtr) << "\t" <<
+                (dataPtr->Name) << " consumed escargot sucker" <<
+                ".\n" << flush;
             }
-            sem_post(dataPtr->MutexPtr);
-            sem_post(dataPtr->AvailablePtr);
+            sem_post(dataPtr->MutexPtr); /* mutex up */
+            sem_post(dataPtr->AvailablePtr); /* space on queue goes up */
         }
     }
 }
