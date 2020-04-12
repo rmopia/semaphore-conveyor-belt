@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <semaphore.h>
 #include <pthread.h>
@@ -7,7 +5,6 @@
 #include "belt.h"
 #include "consumer.h"
 #include "producer.h"
-
 using namespace std;
 
 int main(int argc, char **argv){
@@ -26,6 +23,7 @@ int main(int argc, char **argv){
 
     int l_frog_consumed = 0; /* amount of frogs lucy consumes */
     int l_escargot_consumed = 0; /* amount of escargot lucy consumes */
+    /* consumer and producer struct initialization */
     CONSUMER LucyData;
     pthread_t LucyThread;
     LucyData.Name = "Lucy";
@@ -119,7 +117,6 @@ int main(int argc, char **argv){
     /* producer threads */
     pthread_create(&FrogThread, NULL, FrogProducer, &FrogData);
     pthread_create(&EscargotThread, NULL, EscargotProducer, &EscargotData);
-
     /* consumer threads */
     pthread_create(&LucyThread, NULL, Consumer, &LucyData);
     pthread_create(&EthelThread, NULL, Consumer, &EthelData);

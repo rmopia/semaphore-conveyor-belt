@@ -26,7 +26,7 @@ bool BeltQueue::push(int candy){
     /* if the queue is not full, add a candy at tail */
     if(this->max_len != this->tail){
         this->qu[this->tail] = candy;
-        this->tail += 1; /* iterate space of belt */
+        this->tail += 1; /* iterate to next candy slot */
         return true;
     }
     /* queue is full, return false */
@@ -37,7 +37,7 @@ bool BeltQueue::push(int candy){
 
 /* pops out the element in front of the conveyor belt */
 int BeltQueue::pop(){
-    int candy = 0;
+    int candy;
     /* save popped candy value */
     candy = this->qu[this->head];
 
