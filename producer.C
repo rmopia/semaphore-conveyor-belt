@@ -39,6 +39,9 @@ void* FrogProducer(void* voidPtr){
             /* milliseconds converted to seconds as sleep() takes in seconds */
             //sleep((FrgPtr->produce_time)/1000);
             Sleep(FrgPtr->produce_time);
+            //sleep(10/1000);
+            /* delay to disallow even the base case to overproduce candies */
+            Sleep(10);
         }
         /* else continue to loop */
         else{
@@ -78,6 +81,9 @@ void* EscargotProducer(void* voidPtr){
             sem_post(EscPtr->UnconsumedPtr); /* unconsumed candy on belt up */
             //sleep((FrgPtr->produce_time)/1000);
             Sleep(EscPtr->produce_time);
+            /* delay to disallow the base case to overproduce candies */
+            //sleep(10/1000);
+            Sleep(10);
         }
         else{
             continue;

@@ -11,7 +11,7 @@ using namespace std;
 void *Consumer(void* voidPtr){
     /* convert void pointer for data use and collection */
     CONSUMER *ConPtr = (CONSUMER*)(voidPtr);
-    /* rather than 100, 99 used to consider thread's overlapping */
+    /* we consume 100 candies before we finish the threads */
     while(*(ConPtr->ConsumedValPtr) < 100){
         /* if queue is not empty we proceed */
         if(ConPtr->BQPtr->head != ConPtr->BQPtr->tail){

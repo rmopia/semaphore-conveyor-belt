@@ -8,7 +8,7 @@
 	"consumer.h"
 	"producer.h"
 
-1586928148 source:c:\cppprojects\a05\consumer.c
+1586929459 source:c:\cppprojects\a05\consumer.c
 	<unistd.h>
 	<semaphore.h>
 	<windows.h>
@@ -16,7 +16,7 @@
 	"consumer.h"
 	"belt.h"
 
-1586928062 source:c:\cppprojects\a05\producer.c
+1586929840 source:c:\cppprojects\a05\producer.c
 	<unistd.h>
 	<semaphore.h>
 	<windows.h>
