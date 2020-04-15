@@ -3,6 +3,7 @@
 #ifndef CONSUMER_HEADER
 #define CONSUMER_HEADER
 
+/* consumer data struct */
 typedef struct{
     char *Name; /* Ethel, Lucy */
     /* amount of time thread takes to "consume" */
@@ -16,8 +17,8 @@ typedef struct{
     int *ConsumedValPtr; /* ptr to total consumed amount */
     int *ConsumedFrogPtr; /* ptr to total consumed amount of frogs */
     int *ConsumedEscargotPtr; /* ptr to total consumed amount of escargot */
-    int *EscargotBeltPtr;
-    int *FrogBeltPtr;
+    int *EscargotBeltPtr; /* ptr to escargot amount on queue */
+    int *FrogBeltPtr; /* ptr to frog amount on queue */
 } CONSUMER;
 
 /* consumer process */

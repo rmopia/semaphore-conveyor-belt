@@ -23,20 +23,20 @@ int main(int argc, char **argv){
 
     int l_frog_consumed = 0; /* amount of frogs lucy consumes */
     int l_escargot_consumed = 0; /* amount of escargot lucy consumes */
-    /* consumer and producer struct initialization */
+    /* consumer struct initialization */
     CONSUMER LucyData;
-    pthread_t LucyThread;
-    LucyData.Name = "Lucy";
-    LucyData.MutexPtr = &mutex;
-    LucyData.UnconsumedPtr = &unconsumed;
-    LucyData.AvailablePtr = &available_slots;
-    LucyData.ProdValPtr = &total_produced;
-    LucyData.ConsumedValPtr = &total_consumed;
+    pthread_t LucyThread; /* associated thread also initialized */
+    LucyData.Name = "Lucy"; /* name of data struct */
+    LucyData.MutexPtr = &mutex; /* up/down sem */
+    LucyData.UnconsumedPtr = &unconsumed; /* unconsumed candy on belt sem */
+    LucyData.AvailablePtr = &available_slots; /* available space on belt sem */
+    LucyData.ProdValPtr = &total_produced; /* total candies produced */
+    LucyData.ConsumedValPtr = &total_consumed; /* total candies consumed */
     LucyData.ConsumedFrogPtr = &l_frog_consumed;
     LucyData.ConsumedEscargotPtr = &l_escargot_consumed;
-    LucyData.FrogBeltPtr = &frogs_on_belt;
-    LucyData.EscargotBeltPtr = &escargot_on_belt;
-    LucyData.BQPtr = bq;
+    LucyData.FrogBeltPtr = &frogs_on_belt; /* curr amnt of frogs on belt */
+    LucyData.EscargotBeltPtr = &escargot_on_belt; /* curr amnt of esc on belt */
+    LucyData.BQPtr = bq; /* struct ptr that points to belt queue */
 
     int e_frog_consumed = 0; /* amount of frogs ethel consumes */
     int e_escargot_consumed = 0; /* amount of escargot ethel consumes */
@@ -54,6 +54,7 @@ int main(int argc, char **argv){
     EthelData.EscargotBeltPtr = &escargot_on_belt;
     EthelData.BQPtr = bq;
 
+    /* producer struct & thread initialization */
     PRODUCER FrogData;
     pthread_t FrogThread;
     FrogData.Name = "crunchy frog bite";
@@ -82,6 +83,7 @@ int main(int argc, char **argv){
 
     int Option = 0; /* flags declared by user in command line */
 
+    /* we obtain produce/consume time of each thread, if any */
     while ((Option = getopt(argc, argv, "E:L:f:e:")) != -1) {
         switch (Option) {
         case 'E': /* how long it takes Ethel to consume 1 candy */
@@ -90,10 +92,10 @@ int main(int argc, char **argv){
         case 'L': /* how long it takes Lucy to consume 1 candy */
             LucyData.consume_time = atoi(optarg);
             break;
-        case 'f':  /* how long to produce a crunchy frog bite */
+        case 'f':  /* how long to produce a frog bite from frog producer */
             FrogData.produce_time = atoi(optarg);
             break;
-        case 'e': /* how long to produce a everlasting escargot sucker */
+        case 'e': /* how long to produce a esc sucker from esc producer */
             EscargotData.produce_time = atoi(optarg);
             break;
         default: /* deals with invalid args from user */
@@ -102,6 +104,7 @@ int main(int argc, char **argv){
         }
   }
 
+    /* semaphore initialization */
     /* traditional Dijkstra wait/signal semaphore */
     if(sem_init(&mutex, 0, 1) == -1){
         exit(1); /* exit if initialization goes wrong */
@@ -114,10 +117,10 @@ int main(int argc, char **argv){
         exit(1);
     }
 
-    /* producer threads */
+    /* start producer threads */
     pthread_create(&FrogThread, NULL, FrogProducer, &FrogData);
     pthread_create(&EscargotThread, NULL, EscargotProducer, &EscargotData);
-    /* consumer threads */
+    /* start consumer threads */
     pthread_create(&LucyThread, NULL, Consumer, &LucyData);
     pthread_create(&EthelThread, NULL, Consumer, &EthelData);
 
@@ -127,6 +130,7 @@ int main(int argc, char **argv){
     pthread_join(LucyThread, NULL);
     pthread_join(EthelThread, NULL);
 
+    /* result output on work of producer and consumer threads */
     cout << endl;
     cout << "PRODUCTION REPORT" << endl;
     for(int i = 0; i < 40; i++){

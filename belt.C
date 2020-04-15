@@ -1,20 +1,11 @@
 #include <iostream>
 #include "belt.h"
 
-Candy::Candy(char *name){
-    this->candy_name = name;
-    if(this->candy_name == "Frog"){
-        this->candy_num = FROG;
-    }
-    else{
-        this->candy_num = ESCARGOT;
-    }
-}
-/* constructor for conveyor belt */
+/* constructor for conveyor belt queue */
 BeltQueue::BeltQueue(int len){
-    this->max_len = len; /* capacity on the belt */
+    this->max_len = len; /* max capacity on the belt */
     this->head = 0; /* head value never changes */
-    this->tail = 0; /* tail value changes based on space on belt */
+    this->tail = 0; /* tail value changes based on candies on belt */
     this->qu = new int[max_len]; /* capacity of belt is initialized to arr */
     /* fills queue with zeros */
     for(int i = 0; i < max_len; i++){
@@ -22,9 +13,10 @@ BeltQueue::BeltQueue(int len){
     }
 }
 
+/* adds a candy at the end of the belt */
 bool BeltQueue::push(int candy){
     /* if the queue is not full, add a candy at tail */
-    if(this->max_len != this->tail){
+    if(this->tail != this->max_len){
         this->qu[this->tail] = candy;
         this->tail += 1; /* iterate to next candy slot */
         return true;
@@ -37,11 +29,11 @@ bool BeltQueue::push(int candy){
 
 /* pops out the element in front of the conveyor belt */
 int BeltQueue::pop(){
-    int candy;
+    int candy = 0;
     /* save popped candy value */
     candy = this->qu[this->head];
 
-    if(this->head != this->tail){
+    if(this->tail != this->head){
         /* shifts each candy one closer to the front */
         /* while removing the first candy */
         for(int i = 0; i < this->tail - 1; i++){
@@ -54,12 +46,4 @@ int BeltQueue::pop(){
         }
     }
     return candy;
-}
-
-/* used for debugging output */
-void BeltQueue::printQueue(){
-    for(int i = 0; i < this->max_len; i++){
-        std::cout << this->qu[i] << " ";
-    }
-    std::cout << std::endl;
 }
